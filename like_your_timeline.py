@@ -1,10 +1,11 @@
+import sys
+import traceback
+import codecs
+import time
 from selenium import webdriver
 from getpass import getpass
 from pyvirtualdisplay import Display
-import sys
-import codecs
 from selenium.webdriver.support import expected_conditions as EC
-import time
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -50,19 +51,27 @@ def execute_liking(username, password, driver):
 
     for e in elements:
         try:
-            print("Waiting for element to be visible")
             WebDriverWait(driver, 10).until(EC.visibility_of(e))
             
+            """
+            element for the whole tweet 
+            """
+            content_element = e.find_element_by_xpath("../../../..")           
+ 
             driver.execute_script("arguments[0].scrollIntoView();", e)
-            print("clicking " + str(e))
+            
+            """
+            Involving Javascript is hacky, but it is a workaround to get rid of unclickable errors
+            """
             driver.execute_script("arguments[0].click();", e)
             
-            print("clicked " + str(e.text))
-            
+            fullname = content_element.find_element_by_css_selector(".fullname.show-popup-with-id.u-textTruncate")
+            print("clicked like for " + fullname.text)
+
             num_success += 1
             time.sleep(1)
         except Exception as e:
-            print(str(e))
+            traceback.print_exc()
 
     print("Successfully clicks: " + str(num_success))
 
@@ -74,15 +83,14 @@ if __name__ == "__main__":
     display.start()
 
     driver = webdriver.Firefox()
+    driver.set_window_position(0, 0)
+    driver.set_window_size(1024, 768)
     driver.get("https://twitter.com/login")
 
     try:
         execute_liking(username, password, driver)
     except Exception as e:
-        print(str(e))
+        traceback.print_exc()
     finally:
         driver.quit()
         display.stop()
-
-
-
