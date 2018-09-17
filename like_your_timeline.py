@@ -76,8 +76,14 @@ def execute_liking(username, password, driver):
     print("Successfully clicks: " + str(num_success))
 
 if __name__ == "__main__":
-    username = ""
-    password = getpass("password:")
+
+    with open('username', 'r') as myfile:
+        username = myfile.read().replace('\n', '')
+
+    print("Using username: " + username)
+
+    with open('password', 'r') as myfile:
+        password = myfile.read().replace('\n', '')
 
     display = Display(visible=0, size=(1024, 2048))
     display.start()
