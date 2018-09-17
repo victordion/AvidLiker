@@ -7,7 +7,7 @@ This script helps you login into your Twitter account, and click the favorite bu
 ## Usage
 It is pretty straight forward. Fill in your login email in the script, then type
 ```
-% python login_twitter.py
+% python like_your_timeline.py
 ```
 Type in your password, and you will see output such as
 ```
