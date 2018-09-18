@@ -5,59 +5,24 @@
 Life is short. How can I make smart use of my time to express my respect to people I follow on Twitter promptly without making myself exhausted?
 This script helps you login into your Twitter account, and click the favorite button on tweets that appear on your timeline. Sounds wonderful huh?
 ## Usage
-It is pretty straight forward. Fill in your login email in the script, then type
+It is pretty straight forward. 
+1) Make a text file 'username' containing your login email.
+2) Make a text file 'password' (preferrably only readable to the script run-as user) containing your login password.
+3) Just fire and see!!
 ```
 % python like_your_timeline.py
 ```
-Type in your password, and you will see output such as
+A sample output
 ```
-Login OK
-Found 45 clickable heart buttons
-clicked like for UberFacts
-clicked like for Erin Biba
-clicked like for Elise Trivers
-clicked like for likaichen
-clicked like for Eric Alper
-clicked like for Felonious Munk
-clicked like for The Seattle Times
-clicked like for Fox News
-clicked like for ditch pony
-clicked like for Amazon Web Services
-clicked like for TicToc by Bloomberg
-clicked like for emptywheel
-clicked like for Fox News
-clicked like for TicToc by Bloomberg
-clicked like for TicToc by Bloomberg
-clicked like for Colleen Ballinger
-clicked like for Donald J. Trump
-clicked like for Berit
-clicked like for Meanwhile in Canada
-clicked like for UberFacts
-clicked like for Matthew Garrett
-clicked like for Francis Fukuyama
-clicked like for TicToc by Bloomberg
-clicked like for Judd Legum
-clicked like for The Seattle Times
-clicked like for Michael Stapelberg
-clicked like for Kate Flannery
-clicked like for SDOT Traffic
-clicked like for Judd Apatow
-clicked like for Twitter Sports
-clicked like for Bloomberg
-clicked like for TicToc by Bloomberg
-clicked like for Fox News
-clicked like for James Fallows
-clicked like for Kamala Harris
-clicked like for 60 Minutes
-clicked like for Bloomberg
-clicked like for Sarah Palin
-clicked like for The Hypnotic Beast
-clicked like for DEV Community
-clicked like for Fox News
-clicked like for The Seattle Times
-clicked like for Eric Alper
-clicked like for Leonardo DiCaprio
-Successfully clicks: 45
+2018-09-17 18:32:38,226 [MainThread  ] [INFO ] Using username: abc@gmail.com
+2018-09-17 18:32:38,227 [MainThread  ] [INFO ] Password read from file
+2018-09-17 18:32:53,516 [MainThread  ] [INFO ] Login OK
+2018-09-17 18:32:53,543 [MainThread  ] [INFO ] Found 49 clickable heart buttons
+2018-09-17 18:33:00,236 [MainThread  ] [INFO ] clicked like for TicToc by Bloomberg
+2018-09-17 18:33:01,564 [MainThread  ] [INFO ] clicked like for Stephanie Hurlburt
+...
+...
+2018-09-17 18:34:10,257 [MainThread  ] [INFO ] Successfully clicks: 49
 ```
 
 Of course you will need to install some dependency packages first. If you have some prioror experience working with web scraping, this will not be a problem for you.
