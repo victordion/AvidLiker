@@ -2,6 +2,8 @@ import sys
 import traceback
 import codecs
 import time
+import logging
+import datetime
 from selenium import webdriver
 from getpass import getpass
 from pyvirtualdisplay import Display
@@ -33,14 +35,14 @@ def execute_liking(username, password, driver):
     """
     time.sleep(10)
     
-    print("Login OK")
+    logging.info("Login OK")
     
     """
     Find all 'Favorite' button on the current visible page    
     """
     elements = driver.find_elements_by_css_selector(".ProfileTweet-actionButton.js-actionButton.js-actionFavorite")
     
-    print("Found " + str(len(elements)) + " clickable heart buttons")
+    logging.info("Found " + str(len(elements)) + " clickable heart buttons")
 
     """
     Useful for debugging
@@ -51,6 +53,9 @@ def execute_liking(username, password, driver):
 
     for e in elements:
         try:
+            
+            driver.execute_script("arguments[0].scrollIntoView();", e)
+            
             WebDriverWait(driver, 10).until(EC.visibility_of(e))
             
             """
@@ -58,7 +63,6 @@ def execute_liking(username, password, driver):
             """
             content_element = e.find_element_by_xpath("../../../..")           
  
-            driver.execute_script("arguments[0].scrollIntoView();", e)
             
             """
             Involving Javascript is hacky, but it is a workaround to get rid of unclickable errors
@@ -66,25 +70,44 @@ def execute_liking(username, password, driver):
             driver.execute_script("arguments[0].click();", e)
             
             fullname = content_element.find_element_by_css_selector(".fullname.show-popup-with-id.u-textTruncate")
-            print("clicked like for " + fullname.text)
+            logging.info("clicked like for " + fullname.text)
 
             num_success += 1
             time.sleep(1)
         except Exception as e:
             traceback.print_exc()
 
-    print("Successfully clicks: " + str(num_success))
+    logging.info("Successfully clicks: " + str(num_success))
 
 if __name__ == "__main__":
+
+    logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s] %(message)s")
+    rootLogger = logging.getLogger()
+    rootLogger.setLevel(logging.DEBUG)
+
+    log_file = datetime.datetime.now().strftime("like_twitter_%Y_%m_%d_%H_%M_%S.log")
+    
+    fileHandler = logging.FileHandler(log_file)
+    fileHandler.setFormatter(logFormatter)
+    fileHandler.setLevel(logging.INFO)
+
+    consoleHandler = logging.StreamHandler()
+    consoleHandler.setFormatter(logFormatter)
+    consoleHandler.setLevel(logging.INFO)
+
+    rootLogger.addHandler(fileHandler)
+    rootLogger.addHandler(consoleHandler)
 
     with open('username', 'r') as myfile:
         username = myfile.read().replace('\n', '')
 
-    print("Using username: " + username)
+    logging.info("Using username: " + username)
 
     with open('password', 'r') as myfile:
         password = myfile.read().replace('\n', '')
-
+   
+    logging.info('Password read from file')
+    
     display = Display(visible=0, size=(1024, 2048))
     display.start()
 
