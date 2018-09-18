@@ -4,7 +4,7 @@ import codecs
 import time
 import logging
 import datetime
-from PIL import Image
+from PIL import Image, ImageFont, ImageDraw, ImageEnhance
 from selenium import webdriver
 from getpass import getpass
 from pyvirtualdisplay import Display
@@ -53,6 +53,7 @@ def execute_liking(username, password, driver):
     num_success = 0
 
     im = Image.open('t.png')
+    draw = ImageDraw.Draw(im)
 
     for e in elements:
         try:
@@ -64,31 +65,42 @@ def execute_liking(username, password, driver):
             """
             tweet_element = e.find_element_by_xpath("../../../../..")
             WebDriverWait(driver, 10).until(EC.visibility_of(tweet_element))
-            
-            location = tweet_element.location
-            size = tweet_element.size
+                      
+            #location = tweet_element.location
+            #size = tweet_element.size
 
+            location = e.location
+            size = e.size
+            
             left = location['x']
             top = location['y']
             right = location['x'] + size['width']
             bottom = location['y'] + size['height']
 
-            element_im = im.crop((left, top, right, bottom)) # defines crop points
-            element_im.save(str(num_success) + '.png')
+            #element_im = im.crop((left, top, right, bottom)) # defines crop points
+            #element_im.save(str(num_success) + '.png')
 
+            logging.info("({}, {}) ({}, {})".format(left, top, right, bottom))
+            draw.rectangle(((left, top), (right, bottom)), fill="black")
+
+            tweet_id = tweet_element.get_attribute("data-item-id")
+           
             """
             Involving Javascript is hacky, but it is a workaround to get rid of unclickable errors
             """
             driver.execute_script("arguments[0].click();", e)
             
+
             fullname = tweet_element.find_element_by_css_selector(".fullname.show-popup-with-id.u-textTruncate")
-            logging.info("clicked like for " + fullname.text)
+            
+            logging.info("clicked like for " + fullname.text + " for tweet " + tweet_id)
 
             num_success += 1
             time.sleep(1)
         except Exception as e:
-            loggin.error(traceback.format_exc())
+            logging.error(traceback.format_exc())
 
+    im.save('t_marked.png')
     logging.info("Successfully clicks: " + str(num_success))
 
 if __name__ == "__main__":
@@ -120,18 +132,18 @@ if __name__ == "__main__":
    
     logging.info('Password read from file')
     
-    display = Display(visible=0, size=(1024, 2048))
+    display = Display(visible=0, size=(1980, 1080))
     display.start()
 
     driver = webdriver.Firefox()
-    driver.set_window_position(0, 0)
-    driver.set_window_size(1024, 768)
+    driver.set_window_position(10, 10)
+    driver.set_window_size(1600, 768)
     driver.get("https://twitter.com/login")
 
     try:
         execute_liking(username, password, driver)
     except Exception as e:
-        loggin.error(traceback.format_exc())
+        logging.error(traceback.format_exc())
     finally:
         driver.quit()
         display.stop()
