@@ -87,7 +87,7 @@ def execute_liking(username, password, driver):
             num_success += 1
             time.sleep(1)
         except Exception as e:
-            traceback.print_exc()
+            loggin.error(traceback.format_exc())
 
     logging.info("Successfully clicks: " + str(num_success))
 
@@ -131,7 +131,7 @@ if __name__ == "__main__":
     try:
         execute_liking(username, password, driver)
     except Exception as e:
-        traceback.print_exc()
+        loggin.error(traceback.format_exc())
     finally:
         driver.quit()
         display.stop()
