@@ -4,6 +4,7 @@ import codecs
 import time
 import logging
 import datetime
+from PIL import Image
 from selenium import webdriver
 from getpass import getpass
 from pyvirtualdisplay import Display
@@ -51,25 +52,36 @@ def execute_liking(username, password, driver):
 
     num_success = 0
 
+    im = Image.open('t.png')
+
     for e in elements:
         try:
             
             driver.execute_script("arguments[0].scrollIntoView();", e)
             
-            WebDriverWait(driver, 10).until(EC.visibility_of(e))
-            
             """
             element for the whole tweet 
             """
-            content_element = e.find_element_by_xpath("../../../..")           
- 
+            tweet_element = e.find_element_by_xpath("../../../../..")
+            WebDriverWait(driver, 10).until(EC.visibility_of(tweet_element))
             
+            location = tweet_element.location
+            size = tweet_element.size
+
+            left = location['x']
+            top = location['y']
+            right = location['x'] + size['width']
+            bottom = location['y'] + size['height']
+
+            element_im = im.crop((left, top, right, bottom)) # defines crop points
+            element_im.save(str(num_success) + '.png')
+
             """
             Involving Javascript is hacky, but it is a workaround to get rid of unclickable errors
             """
             driver.execute_script("arguments[0].click();", e)
             
-            fullname = content_element.find_element_by_css_selector(".fullname.show-popup-with-id.u-textTruncate")
+            fullname = tweet_element.find_element_by_css_selector(".fullname.show-popup-with-id.u-textTruncate")
             logging.info("clicked like for " + fullname.text)
 
             num_success += 1
